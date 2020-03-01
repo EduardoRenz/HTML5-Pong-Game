@@ -1,0 +1,73 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+<canvas id="canvas" width="800" height="600" ></canvas>
+
+  <script src="player.js" charset="utf-8"></script>
+  <script src="ball.js" charset="utf-8"></script>
+  <script src="game.js" charset="utf-8"></script>
+  <script type="text/javascript">
+    var canvas;
+    var canvasConext;
+    var FramesPerSecond =  30;
+    var gravidade = 100;
+    pl = new player();
+    var isGaming = true;
+    var message  = "";
+
+
+    // Apos a pagina carregar
+    window.onload = function () {
+      canvas = document.getElementById('canvas');
+      ball = new ball(canvas.width/2,canvas.height/2);
+      ia = new player(canvas.width - 20,10,10,110,'red','IA');
+      canvasContext = canvas.getContext('2d');
+      setInterval(update,1000 / FramesPerSecond);
+      canvas.addEventListener('mousemove',function(evt){
+        var mousePos = calculateMousePos(evt);
+        pl.posY = mousePos.y - (pl.height/2);
+        //Se tocar no chao, evita que ele passe do canvas
+        if(pl.touches().touchBottom){
+          pl.posY = (canvas.height - pl.height);
+        }
+        if(pl.touches().touchTop){
+          pl.posY = 0;
+        }
+      });
+    }
+
+    //Executa a cada fps
+    function update(){
+      if(isGaming){
+        gaming();
+      }
+      else{
+        canvasContext.fillStyle = "white";
+        canvasContext.font="20px Georgia";
+        canvasContext.fillText( message,canvas.width/2,canvas.height/2);
+      }
+
+    }
+
+
+
+
+  // Calcula as coordenadas do mouse
+  function calculateMousePos(evt){
+    var rect = canvas.getBoundingClientRect();
+    var root = document.documentElement;
+    var mouseX = evt.clientX - rect.left - root.scrollLeft;
+    var mouseY = evt.clientY - rect.top - root.scrollTop;
+    return {
+      x:mouseX,
+      y:mouseY
+    };
+  }
+  </script>
+</body>
+</html>
